@@ -4,16 +4,50 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit104d38afc029ee4990ce7f81e1e2d490
+class ComposerStaticInitaea6c34e9e434c2793a4322c5cd0b012
 {
+    public static $prefixLengthsPsr4 = array (
+        'T' =>
+        array (
+            'THSCD\\WPHC\\' => 11,
+        ),
+    );
+
+    public static $prefixDirsPsr4 = array (
+        'THSCD\\WPHC\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/src',
+        ),
+    );
+
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'THSCD\\WPHC\\Admin\\AJAX' => __DIR__ . '/../..' . '/src/Admin/AJAX.php',
+        'THSCD\\WPHC\\Admin\\Dashboard' => __DIR__ . '/../..' . '/src/Admin/Dashboard.php',
+        'THSCD\\WPHC\\Admin\\Metaboxes' => __DIR__ . '/../..' . '/src/Admin/Metaboxes.php',
+        'THSCD\\WPHC\\Admin\\Notices' => __DIR__ . '/../..' . '/src/Admin/Notices.php',
+        'THSCD\\WPHC\\Admin\\Pointers' => __DIR__ . '/../..' . '/src/Admin/Pointers.php',
+        'THSCD\\WPHC\\Core\\Bootstrap' => __DIR__ . '/../..' . '/src/Core/Bootstrap.php',
+        'THSCD\\WPHC\\Core\\Container' => __DIR__ . '/../..' . '/src/Core/Container.php',
+        'THSCD\\WPHC\\Core\\Hookable' => __DIR__ . '/../..' . '/src/Core/Hookable.php',
+        'THSCD\\WPHC\\Modules\\Autoload' => __DIR__ . '/../..' . '/src/Modules/Autoload.php',
+        'THSCD\\WPHC\\Modules\\CLI' => __DIR__ . '/../..' . '/src/Modules/CLI.php',
+        'THSCD\\WPHC\\Modules\\Plugins' => __DIR__ . '/../..' . '/src/Modules/Plugins.php',
+        'THSCD\\WPHC\\Modules\\SSL' => __DIR__ . '/../..' . '/src/Modules/SSL.php',
+        'THSCD\\WPHC\\Modules\\Server' => __DIR__ . '/../..' . '/src/Modules/Server.php',
+        'THSCD\\WPHC\\Modules\\Transients' => __DIR__ . '/../..' . '/src/Modules/Transients.php',
+        'THSCD\\WPHC\\Modules\\WordPress' => __DIR__ . '/../..' . '/src/Modules/WordPress.php',
+        'THSCD\\WPHC\\Utils\\Install' => __DIR__ . '/../..' . '/src/Utils/Install.php',
+        'THSCD\\WPHC\\Utils\\Upgrade' => __DIR__ . '/../..' . '/src/Utils/Upgrade.php',
+        'THSCD\\WPHC\\Utils\\View' => __DIR__ . '/../..' . '/src/Utils/View.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->classMap = ComposerStaticInit104d38afc029ee4990ce7f81e1e2d490::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitaea6c34e9e434c2793a4322c5cd0b012::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitaea6c34e9e434c2793a4322c5cd0b012::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitaea6c34e9e434c2793a4322c5cd0b012::$classMap;
 
         }, null, ClassLoader::class);
     }

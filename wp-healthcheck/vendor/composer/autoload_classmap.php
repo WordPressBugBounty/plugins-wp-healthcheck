@@ -7,4 +7,22 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'THSCD\\WPHC\\Admin\\AJAX' => $baseDir . '/src/Admin/AJAX.php',
+    'THSCD\\WPHC\\Admin\\Dashboard' => $baseDir . '/src/Admin/Dashboard.php',
+    'THSCD\\WPHC\\Admin\\Metaboxes' => $baseDir . '/src/Admin/Metaboxes.php',
+    'THSCD\\WPHC\\Admin\\Notices' => $baseDir . '/src/Admin/Notices.php',
+    'THSCD\\WPHC\\Admin\\Pointers' => $baseDir . '/src/Admin/Pointers.php',
+    'THSCD\\WPHC\\Core\\Bootstrap' => $baseDir . '/src/Core/Bootstrap.php',
+    'THSCD\\WPHC\\Core\\Container' => $baseDir . '/src/Core/Container.php',
+    'THSCD\\WPHC\\Core\\Hookable' => $baseDir . '/src/Core/Hookable.php',
+    'THSCD\\WPHC\\Modules\\Autoload' => $baseDir . '/src/Modules/Autoload.php',
+    'THSCD\\WPHC\\Modules\\CLI' => $baseDir . '/src/Modules/CLI.php',
+    'THSCD\\WPHC\\Modules\\Plugins' => $baseDir . '/src/Modules/Plugins.php',
+    'THSCD\\WPHC\\Modules\\SSL' => $baseDir . '/src/Modules/SSL.php',
+    'THSCD\\WPHC\\Modules\\Server' => $baseDir . '/src/Modules/Server.php',
+    'THSCD\\WPHC\\Modules\\Transients' => $baseDir . '/src/Modules/Transients.php',
+    'THSCD\\WPHC\\Modules\\WordPress' => $baseDir . '/src/Modules/WordPress.php',
+    'THSCD\\WPHC\\Utils\\Install' => $baseDir . '/src/Utils/Install.php',
+    'THSCD\\WPHC\\Utils\\Upgrade' => $baseDir . '/src/Utils/Upgrade.php',
+    'THSCD\\WPHC\\Utils\\View' => $baseDir . '/src/Utils/View.php',
 );

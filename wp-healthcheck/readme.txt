@@ -2,10 +2,10 @@
 Contributors: tiagohillebrandt, marksabbath
 Donate link: https://www.paypal.com/donate/?hosted_button_id=45R6Q8J8JERVS
 Tags: performance, transients, autoload, cron, healthcheck, load time, ssl, https, check
-Requires at least: 5.0
-Tested up to: 6.6
-Requires PHP: 7.0
-Stable tag: 1.4.0
+Requires at least: 5.5
+Tested up to: 7.0
+Requires PHP: 7.2
+Stable tag: 1.4.1
 License: GPLv3+
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,6 +76,12 @@ If you are a developer and want to contribute writing new features, enhancements
 3. WP-CLI extension.
 
 == Changelog ==
+
+= [1.4.1] 2026-06-21 =
+* Security: Hardened the admin AJAX actions.
+* Changed: Several code quality and performance improvements.
+* Changed: Bumped the minimum PHP version to 7.2.
+* Changed: Bumped the minimum WordPress version to 5.5.
 
 = [1.4.0] 2024-07-16 =
 * Changed: Bumped the minimum PHP version up to 7.0.
