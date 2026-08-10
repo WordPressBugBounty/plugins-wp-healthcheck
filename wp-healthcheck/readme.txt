@@ -1,11 +1,11 @@
 === WP Healthcheck ===
 Contributors: tiagohillebrandt, marksabbath
 Donate link: https://www.paypal.com/donate/?hosted_button_id=45R6Q8J8JERVS
-Tags: performance, transients, autoload, cron, healthcheck, load time, ssl, https, check
+Tags: healthcheck, performance, transients, autoload, ssl
 Requires at least: 5.5
-Tested up to: 7.0
+Tested up to: 7.0.3
 Requires PHP: 7.2
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: GPLv3+
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,6 +76,13 @@ If you are a developer and want to contribute writing new features, enhancements
 3. WP-CLI extension.
 
 == Changelog ==
+
+= [1.5.0] 2026-08-10 =
+* Added: Support for the LiteSpeed and OpenLiteSpeed web servers, including update notices and the System Info badge.
+* Added: Implemented a tooltip in the System Info panel to notify when a new PHP minor version is available.
+* Added: Badge to the System Info panel displaying the server IP address.
+* Changed: Admin notices from other plugins and themes are no longer displayed on the WP Healthcheck page.
+* Fixed: False admin notice asking to upgrade PHP even when the installed version meets the WordPress recommendation.
 
 = [1.4.1] 2026-06-21 =
 * Security: Hardened the admin AJAX actions.

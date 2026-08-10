@@ -48,9 +48,42 @@
   color: #c91616;
 }
 
-.wphc_system_info ul li.outdated {
+.wphc_system_info ul li.outdated,
+.wphc_system_info ul li.need_update {
   background: #fffbdc;
   color: #7e7d02;
+}
+
+.wphc_system_info ul li.need_update {
+  cursor: help;
+  position: relative;
+}
+
+.wphc_system_info ul li.need_update:hover::before {
+  border: 5px solid transparent;
+  border-top-color: #3f4851;
+  bottom: 100%;
+  content: "";
+  left: 50%;
+  margin-bottom: -4px;
+  position: absolute;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.wphc_system_info ul li.need_update:hover::after {
+  background: #3f4851;
+  border-radius: 2px;
+  bottom: 100%;
+  color: #fff;
+  content: attr(data-tooltip);
+  left: 50%;
+  margin-bottom: 6px;
+  padding: 3px 8px;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
 }
 
 .wphc_stats {

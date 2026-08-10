@@ -6,12 +6,21 @@ if ( ! defined( 'WPHC' ) ) {
 $requirements = wphc( 'module.server' )->get_requirements();
 $server_data  = wphc( 'module.server' )->get_data();
 
-if ( empty( $server_data['web']['service'] ) || empty( $server_data['web']['version'] ) || ! preg_match( '/(nginx|apache)/i', $server_data['web']['service'] ) ) {
+if ( empty( $server_data['web']['service'] ) || empty( $server_data['web']['version'] ) || ! preg_match( '/(nginx|apache|litespeed|openlitespeed)/i', $server_data['web']['service'] ) ) {
 	return false;
 }
 
 $service       = $server_data['web']['service'];
 $server_status = wphc( 'module.server' )->is_updated( $service );
+
+$service_names = [
+	'apache'        => 'Apache',
+	'litespeed'     => 'LiteSpeed',
+	'nginx'         => 'Nginx',
+	'openlitespeed' => 'OpenLiteSpeed',
+];
+
+$service_name = $service_names[ $service ] ?? ucfirst( $service );
 
 if ( $server_status === 'updated' || $server_status === false ) {
 	return false;
@@ -21,12 +30,12 @@ $messages = [
 	'outdated' => [
 		'class'   => 'notice-warning is-dismissible',
 		/* translators: %1$s is the current web server (NGINX, Apache, etc), %2$s is the version of the web server installed on server, %3$s is the version that we recommend to use. */
-		'message' => sprintf( __( 'Your %1$s version (%2$s) is not officially supported anymore! In order to get better performance and improvements, we recommend you upgrade your server to %1$s %3$s or greater.', 'wp-healthcheck' ), ucfirst( $service ), $server_data['web']['version'], $requirements[ $service ]['recommended'] ),
+		'message' => sprintf( __( 'Your %1$s version (%2$s) is not officially supported anymore! In order to get better performance and improvements, we recommend you upgrade your server to %1$s %3$s or greater.', 'wp-healthcheck' ), $service_name, $server_data['web']['version'], $requirements[ $service ]['recommended'] ),
 	],
 	'obsolete' => [
 		'class'   => 'notice-error is-dismissible',
 		/* translators: %1$s is the current web server (NGINX, Apache, etc), %2$s is the version of the web server installed on server, %3$s is the version that we recommend to use. */
-		'message' => sprintf( __( 'Your %1$s version (%2$s) is obsolete and is not officially supported anymore! Please contact your developers and/or hosting company to upgrade your %1$s to version %3$s or greater as soon as possible.', 'wp-healthcheck' ), ucfirst( $service ), $server_data['web']['version'], $requirements[ $service ]['recommended'] ),
+		'message' => sprintf( __( 'Your %1$s version (%2$s) is obsolete and is not officially supported anymore! Please contact your developers and/or hosting company to upgrade your %1$s to version %3$s or greater as soon as possible.', 'wp-healthcheck' ), $service_name, $server_data['web']['version'], $requirements[ $service ]['recommended'] ),
 	],
 ];
 ?>

@@ -185,6 +185,12 @@ msgstr ""
 msgid "PHP"
 msgstr ""
 
+#. translators: %s is the latest PHP version available for the branch installed
+#. on the server.
+#: views/admin/partials/sysinfo.php:16
+msgid "Version %s is available."
+msgstr ""
+
 #: views/admin/sysinfo.php:28
 msgid "MariaDB"
 msgstr ""
@@ -195,6 +201,10 @@ msgstr ""
 
 #: views/admin/sysinfo.php:38
 msgid "Web Server"
+msgstr ""
+
+#: views/admin/partials/sysinfo.php:59
+msgid "Server IP"
 msgstr ""
 
 #: views/admin/transients-stats.php:23

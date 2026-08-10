@@ -51,6 +51,7 @@ class Notices implements Hookable {
 	public function hooks() {
 
 		add_action( 'admin_notices', [ $this, 'display_notices' ] );
+		add_action( 'in_admin_header', [ $this, 'hide_unrelated_notices' ] );
 	}
 
 	/**
@@ -87,5 +88,27 @@ class Notices implements Hookable {
 				wphc( 'util.view' )->render( 'notices/' . $notice );
 			}
 		}
+	}
+
+	/**
+	 * Hide the admin notices registered by other plugins or themes on the plugin page.
+	 *
+	 * @since 1.5.0
+	 */
+	public function hide_unrelated_notices() {
+
+		$screen = get_current_screen();
+
+		if ( ! $screen || $screen->id !== wphc( 'admin.dashboard' )->get_hookname() ) {
+			return;
+		}
+
+		remove_all_actions( 'network_admin_notices' );
+		remove_all_actions( 'user_admin_notices' );
+		remove_all_actions( 'admin_notices' );
+		remove_all_actions( 'all_admin_notices' );
+
+		// Restore the plugin's own notices.
+		add_action( 'admin_notices', [ $this, 'display_notices' ] );
 	}
 }

@@ -73,19 +73,7 @@ class Server {
 			$server_software = ! empty( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : false;
 
 			if ( ! empty( $server_software ) ) {
-				$matches = [];
-
-				if ( preg_match( '/(apache|nginx)/i', $server_software, $matches ) ) {
-					$server['web'] = [
-						'service' => strtolower( $matches[0] ),
-						'version' => preg_match( '/([0-9]+\.){2}([0-9]+)?/', $server_software, $matches ) ? trim( $matches[0] ) : false,
-					];
-				} else {
-					$server['web'] = [
-						'service' => 'Web',
-						'version' => $server_software,
-					];
-				}
+				$server['web'] = $this->get_web_server( $server_software );
 			}
 
 			set_transient( self::DATA_TRANSIENT, $server, DAY_IN_SECONDS );
@@ -169,6 +157,26 @@ class Server {
 	}
 
 	/**
+	 * Retrieves the latest patch release available for the PHP branch installed on the server.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @return string|false The latest patch version available, or false if it can't be determined.
+	 */
+	public function get_php_update_version() {
+
+		$requirements = $this->get_requirements();
+
+		if ( empty( $requirements['php']['versions'] ) ) {
+			return false;
+		}
+
+		$sysinfo = $this->get_data();
+
+		return $this->get_latest_minor_version( $sysinfo['php'], $requirements['php']['versions'] );
+	}
+
+	/**
 	 * Determines if the server software is up-to-date or not.
 	 *
 	 * @since 1.4.1
@@ -180,7 +188,7 @@ class Server {
 	public function is_updated( $software ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded
 
 		// Stop the execution if software is not found.
-		if ( ! preg_match( '/^(php|mysql|mariadb|wp|nginx|apache)$/', $software ) ) {
+		if ( ! preg_match( '/^(php|mysql|mariadb|wp|nginx|apache|litespeed|openlitespeed)$/', $software ) ) {
 			return false;
 		}
 
@@ -212,18 +220,13 @@ class Server {
 			$sysinfo[ $software ] = $sysinfo['database']['version'];
 		}
 
-		// PHP.
-		if ( $software === 'php' ) {
-			// Determines the latest minor version available.
-			$minor_latest = $this->get_latest_minor_version( $sysinfo[ $software ], $requirements['php']['versions'] );
-
-			if ( ! empty( $minor_latest ) ) {
-				$requirements[ $software ]['recommended'] = $minor_latest;
-			}
-		}
-
 		// Web server.
-		if ( preg_match( '/^(nginx|apache)$/', $software ) ) {
+		if ( preg_match( '/^(nginx|apache|litespeed|openlitespeed)$/', $software ) ) {
+			// Skip when the local version is unknown or the API data is not available yet (e.g. a cached payload from before the software was supported).
+			if ( empty( $sysinfo['web']['version'] ) || empty( $requirements[ $software ]['versions'] ) ) {
+				return false;
+			}
+
 			$sysinfo[ $software ] = $sysinfo['web']['version'];
 
 			$requirements[ $software ]['minimum'] = end( $requirements[ $software ]['versions'] );
@@ -238,15 +241,64 @@ class Server {
 			$status = 'obsolete';
 		}
 
+		// PHP installs behind the latest patch release of their branch are compatible, but flagged for visibility.
+		if ( $software === 'php' && $status === 'updated' ) {
+			$minor_latest = $this->get_php_update_version();
+
+			if ( ! empty( $minor_latest ) && version_compare( $sysinfo['php'], $minor_latest, '<' ) ) {
+				$status = 'need_update';
+			}
+		}
+
 		/**
 		 * Filters the status of the software update.
 		 *
 		 * @since 1.4.1
 		 *
-		 * @param string $status   The software update status ('updated', 'outdated', or 'obsolete').
+		 * @param string $status   The software update status ('updated', 'need_update', 'outdated', or 'obsolete').
 		 * @param string $software The software name ('php', 'mysql', 'mariadb', 'wp', 'nginx', or 'apache').
 		 */
 		return apply_filters( 'wphc_core_server_is_software_updated', $status, $software );
+	}
+
+	/**
+	 * Detects the web server service and version.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param string $server_software The value of the SERVER_SOFTWARE variable.
+	 *
+	 * @return array The web server service and version.
+	 */
+	private function get_web_server( $server_software ) {
+
+		$matches = [];
+
+		if ( ! preg_match( '/(apache|nginx|litespeed)/i', $server_software, $matches ) ) {
+			return [
+				'service' => 'Web',
+				'version' => $server_software,
+			];
+		}
+
+		$service = strtolower( $matches[0] );
+		$source  = $server_software;
+
+		// LiteSpeed Enterprise and OpenLiteSpeed both identify themselves as 'LiteSpeed', usually with no version. The LSWS_EDITION variable tells them apart and carries the version.
+		if ( $service === 'litespeed' && ! empty( $_SERVER['LSWS_EDITION'] ) ) {
+			$edition = sanitize_text_field( wp_unslash( $_SERVER['LSWS_EDITION'] ) );
+
+			if ( preg_match( '/openlitespeed/i', $edition ) ) {
+				$service = 'openlitespeed';
+			}
+
+			$source = $edition;
+		}
+
+		return [
+			'service' => $service,
+			'version' => preg_match( '/([0-9]+\.){2}([0-9]+)?/', $source, $matches ) ? trim( $matches[0] ) : false,
+		];
 	}
 
 	/**

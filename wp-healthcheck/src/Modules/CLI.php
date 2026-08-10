@@ -211,7 +211,7 @@ class CLI extends WP_CLI_Command {
 			$version = $version['version'];
 		}
 
-		$status = wphc( 'module.server' )->is_updated( $name );
+		$status = wphc( 'module.server' )->is_updated( $this->get_status_name( $name, $info ) );
 		$action = '-';
 
 		if ( $name === 'wp' && $status !== 'updated' ) {
@@ -227,11 +227,7 @@ class CLI extends WP_CLI_Command {
 		}
 
 		if ( $name === 'web' && isset( $info['web'] ) && is_array( $info['web'] ) ) {
-			if ( preg_match( '/(?:apache|nginx)/', $info['web']['service'] ) ) {
-				$version = $info['web']['service'] . '/' . $info['web']['version'];
-			} else {
-				$version = $info['web']['version'];
-			}
+			$version = $this->format_web_version( $info['web'] );
 		}
 
 		$item = [
@@ -240,13 +236,56 @@ class CLI extends WP_CLI_Command {
 			'action'  => $action,
 		];
 
-		if ( preg_match( '/(?:obsolete|outdated)/', $status ) ) {
+		if ( preg_match( '/(?:obsolete|outdated|need_update)/', $status ) ) {
 			$color = ( $status === 'obsolete' ) ? 'r' : 'y';
 
 			$item['version'] = WP_CLI::colorize( '%' . $color . $version . '%n' );
 		}
 
 		return $item;
+	}
+
+	/**
+	 * Resolve the software name used for the status lookup.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param string $name Server component name.
+	 * @param array  $info Server info array.
+	 *
+	 * @return string The software name.
+	 */
+	private function get_status_name( $name, $info ) {
+
+		if ( $name === 'web' && ! empty( $info['web']['service'] ) ) {
+			return $info['web']['service'];
+		}
+
+		return $name;
+	}
+
+	/**
+	 * Format the web server version for display.
+	 *
+	 * @since 1.5.0
+	 *
+	 * @param array $web The web server data.
+	 *
+	 * @return string The formatted version.
+	 */
+	private function format_web_version( $web ) {
+
+		if ( ! preg_match( '/(?:apache|nginx|litespeed)/', $web['service'] ) ) {
+			return $web['version'];
+		}
+
+		$version = $web['service'];
+
+		if ( ! empty( $web['version'] ) ) {
+			$version .= '/' . $web['version'];
+		}
+
+		return $version;
 	}
 
 	/**

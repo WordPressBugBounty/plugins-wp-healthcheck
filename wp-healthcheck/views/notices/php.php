@@ -5,7 +5,7 @@ if ( ! defined( 'WPHC' ) ) {
 
 $php_status = wphc( 'module.server' )->is_updated( 'php' );
 
-if ( $php_status === 'updated' || $php_status === false ) {
+if ( $php_status === 'updated' || $php_status === 'need_update' || $php_status === false ) {
 	return false;
 }
 
